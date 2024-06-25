@@ -87,8 +87,8 @@ plt.close()
 
 oa = opendrift.open_xarray(infn)
 print(oa.ds.trajectory, len(oa.ds.trajectory))
-#ntra = len(oa.ds.trajectory)
-
+ntra = len(oa.ds.trajectory)
+print('ntra: ',ntra)
 
 # Mask on depth 
 # deeper than zmin will be masked out
@@ -123,7 +123,7 @@ boxes=boxes_org.copy()
 
 
 # Set weigths on the trajectories
-trajweights = np.ones(60000) * 1.e10
+trajweights = np.ones(ntra) * 1.e10
 
 
 # #########################

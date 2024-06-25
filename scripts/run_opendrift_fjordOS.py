@@ -44,11 +44,10 @@ o.add_reader([
 
 # #####################
 # CONFIGURATION
-o.disable_vertical_motion()
-o.set_config('drift:horizontal_diffusivity', 5.)
+#o.disable_vertical_motion()
+o.set_config('drift:horizontal_diffusivity', 1.5)
 o.set_config('drift:stokes_drift',False)
-o.set_config('seed:wind_drift_factor',0.02)
-#o.set_config('seed:current_drift_factor',0.)
+#o.set_config('seed:wind_drift_factor',0.02)
 
 
 
@@ -57,13 +56,13 @@ o.set_config('seed:wind_drift_factor',0.02)
 # #####################
 # SEED ELEMENTS
 
-#deploy_lon = 10.55
-#deploy_lat = 59.80
-deploy_lon = 10.65
-deploy_lat = 59.10
+deploy_lon = 10.55
+deploy_lat = 59.80
+#deploy_lon = 10.65
+#deploy_lat = 59.10
 
 
-o.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, time=deploy_time)
+o.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-1, radius=50, number=2000, time=deploy_time)
 
 
 
@@ -74,11 +73,11 @@ o.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, 
 # #####################
 # RUN THE MODEL
 
-total_time = 6 # hours 
+total_time = 9 # hours 
 time_step = 300 # seconds
 
 o.list_configspec()
-o.run(steps=total_time*3600/time_step, time_step=time_step, time_step_output=1800)
+o.run(steps=total_time*3600/time_step, time_step=time_step, time_step_output=900)
 
 
 
@@ -93,7 +92,7 @@ o.run(steps=total_time*3600/time_step, time_step=time_step, time_step_output=180
 # #####################
 # PLOTTING AND POST PROCESSING
 
-buffer=0.02
+buffer=0.05
 
 o.animation(
     color='z',
@@ -106,7 +105,7 @@ o.animation(
 o.plot(
     linecolor='z',
     buffer=buffer,
-    show_elements=False,
+#    show_elements=False,
 #    filename='file.png',
     )
 
@@ -122,12 +121,12 @@ o2 = OceanDrift(loglevel=20)
 o2.add_reader([reader_fjordos, ])
                #reader_arome])
 o2.disable_vertical_motion()
-o2.set_config('drift:horizontal_diffusivity', 5.)
+o2.set_config('drift:horizontal_diffusivity', 1.5)
 o2.set_config('drift:stokes_drift',False)
-o2.set_config('seed:wind_drift_factor',0.)
-o2.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, time=deploy_time )
+# o2.set_config('seed:wind_drift_factor',0.)
+o2.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-1., radius=50, number=2000, time=deploy_time )
 o2.list_configspec()
 o2.run(steps=total_time*3600/time_step, time_step=time_step, time_step_output=900)
 
 
-o.animation(compare=o2, legend=['with wind drift', 'without wind drift'], buffer=buffer)
+o.animation(compare=o2, legend=['with vertical motion', 'without vertical motion'], buffer=buffer)
