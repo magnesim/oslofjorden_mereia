@@ -14,7 +14,6 @@ import pandas as pd
 
 # ###########################################################################
 # Set the input file
-path = '/home/magnes/git/DSA-RadionuclideDrift/scripts/runmodel'
 path = '/lustre/storeB/users/magnes/dsa/iaeamereia'
 infn = f'{path}/outfile.nc'
 

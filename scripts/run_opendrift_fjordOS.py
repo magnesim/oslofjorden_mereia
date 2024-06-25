@@ -63,7 +63,7 @@ deploy_lon = 10.65
 deploy_lat = 59.10
 
 
-o.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, time=deploy_time) #, wind_drift_factor=.02 )
+o.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, time=deploy_time)
 
 
 
@@ -125,7 +125,7 @@ o2.disable_vertical_motion()
 o2.set_config('drift:horizontal_diffusivity', 5.)
 o2.set_config('drift:stokes_drift',False)
 o2.set_config('seed:wind_drift_factor',0.)
-o2.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, time=deploy_time )#, wind_drift_factor=0. )
+o2.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-.01, radius=50, number=2000, time=deploy_time )
 o2.list_configspec()
 o2.run(steps=total_time*3600/time_step, time_step=time_step, time_step_output=900)
 
