@@ -14,7 +14,7 @@ import pandas as pd
 
 # ###########################################################################
 # Set the input file
-path = '/lustre/storeB/users/magnes/dsa/iaeamereia'
+path = '/path/to/files'
 infn = f'{path}/outfile.nc'
 
 
