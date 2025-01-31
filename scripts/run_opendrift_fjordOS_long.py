@@ -23,17 +23,30 @@ dates = [(deploy_time+timedelta(days=ii)).strftime(format='%Y%m%d') for ii in ra
 
 # #####################
 # ADD READERS
+# Choose either FjordOS or Norkyst ocean model below
 
-path_of = 'https://thredds.met.no/thredds/dodsC/fjordos/operational_archive/complete_archive'
-fjordos_fns = [path_of+'/ocean_his.nc_'+iidate+'00' for iidate in dates]
+#use_model = 'FjordOS'
+use_model = 'Norkyst'
 
-reader_fjordos = reader_ROMS_native.Reader(fjordos_fns)
 
-o.add_reader([
-    reader_fjordos, 
-#    reader_arome,
-    ])
+if use_model == 'FjordOS':
+    path_of = 'https://thredds.met.no/thredds/dodsC/fjordos/operational_archive/complete_archive'
+    fjordos_fns = [path_of+'/ocean_his.nc_'+iidate+'00' for iidate in dates]
 
+    reader_fjordos = reader_ROMS_native.Reader(fjordos_fns)
+    reader_list = [reader_fjordos]
+
+
+
+elif use_model == 'Norkyst':
+    path_norkyst160 = 'https://thredds.met.no/thredds/dodsC/fou-hi/norkystv3_160m_m71_be'
+    path_norkyst800 = 'https://thredds.met.no/thredds/dodsC/fou-hi/norkystv3_800m_m00_be'
+    reader_norkyst160 = reader_netCDF_CF_generic.Reader(path_norkyst160)
+    reader_norkyst800 = reader_netCDF_CF_generic.Reader(path_norkyst800)
+
+    reader_list = [reader_norkyst160, reader_norkyst800]
+
+o.add_reader(reader_list)
 
 
 

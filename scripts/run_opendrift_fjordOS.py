@@ -23,21 +23,33 @@ indate = deploy_time.strftime(format='%Y%m%d')
 
 # #####################
 # ADD READERS
+# Choose either FjordOS or Norkyst ocean model below
 
-fjordos_fn = 'ocean_his.nc_'+indate+'00'
-#fjordos_fn = 'ocean_his.nc_fc'
+#use_model = 'FjordOS'
+use_model = 'Norkyst'
 
-#path_of = 'https://thredds.met.no/thredds/dodsC/fjordos/operational_archive/complete_archive/' 
-path_of = 'https://thredds.met.no/thredds/dodsC/fjordos/operational_archive/daily'
 
-#reader_norkyst = reader_netCDF_CF_generic.Reader('https://thredds.met.no/thredds/dodsC/sea/norkyst800m/1h/aggregate_be')
-#reader_arome = reader_netCDF_CF_generic.Reader(f'https://thredds.met.no/thredds/dodsC/meps25epsarchive/{str(deploy_time.year)}/{deploy_time.month:02d}/{deploy_time.day:02d}/meps_det_2_5km_{indate}T00Z.nc')
-reader_fjordos = reader_ROMS_native.Reader(path_of+'/'+fjordos_fn)
+if use_model == 'FjordOS':
+    fjordos_fn = 'ocean_his.nc_'+indate+'00'
+    #fjordos_fn = 'ocean_his.nc_fc'
 
-o.add_reader([
-    reader_fjordos, 
-#    reader_arome,
-    ])
+    path_of = 'https://thredds.met.no/thredds/dodsC/fjordos/operational_archive/complete_archive/' 
+    #path_of = 'https://thredds.met.no/thredds/dodsC/fjordos/operational_archive/daily'
+
+    #reader_arome = reader_netCDF_CF_generic.Reader(f'https://thredds.met.no/thredds/dodsC/meps25epsarchive/{str(deploy_time.year)}/{deploy_time.month:02d}/{deploy_time.day:02d}/meps_det_2_5km_{indate}T00Z.nc')
+    reader_fjordos = reader_ROMS_native.Reader(path_of+'/'+fjordos_fn)
+
+    reader_list = [reader_fjordos]
+
+elif use_model == 'Norkyst':
+    path_norkyst160 = 'https://thredds.met.no/thredds/dodsC/fou-hi/norkystv3_160m_m71_be'
+    path_norkyst800 = 'https://thredds.met.no/thredds/dodsC/fou-hi/norkystv3_800m_m00_be'
+    reader_norkyst160 = reader_netCDF_CF_generic.Reader(path_norkyst160)
+    reader_norkyst800 = reader_netCDF_CF_generic.Reader(path_norkyst800)
+
+    reader_list = [reader_norkyst160, reader_norkyst800]
+
+o.add_reader(reader_list)
 
 
 
@@ -60,6 +72,7 @@ deploy_lon = 10.55
 deploy_lat = 59.80
 #deploy_lon = 10.65
 #deploy_lat = 59.10
+
 
 
 o.seed_elements(lon=deploy_lon, lat=deploy_lat, z=-1, radius=50, number=2000, time=deploy_time)
@@ -98,7 +111,7 @@ o.animation(
     color='z',
         #colorbar=True,
 #        background=['x_sea_water_velocity', 'y_sea_water_velocity'], scale=100,
-#        filename='file.mp4',
+        #filename='../output/file1.mp4',
         buffer=buffer,
         )
 
@@ -106,7 +119,7 @@ o.plot(
     linecolor='z',
     buffer=buffer,
 #    show_elements=False,
-#    filename='file.png',
+    #filename='file.png',
     )
 
 
@@ -118,8 +131,8 @@ o.plot(
 # ######################
 # NEW SIMULATION; DISABLE WIND DRIFT
 o2 = OceanDrift(loglevel=20)
-o2.add_reader([reader_fjordos, ])
-               #reader_arome])
+o2.add_reader(reader_list)
+
 o2.disable_vertical_motion()
 o2.set_config('drift:horizontal_diffusivity', 1.5)
 o2.set_config('drift:stokes_drift',False)
@@ -129,4 +142,7 @@ o2.list_configspec()
 o2.run(steps=total_time*3600/time_step, time_step=time_step, time_step_output=900)
 
 
-o.animation(compare=o2, legend=['with vertical motion', 'without vertical motion'], buffer=buffer)
+o.animation(compare=o2, legend=['with vertical motion', 'without vertical motion'], 
+            buffer=buffer, 
+            #filename='../output/file2.mp4'
+            )
